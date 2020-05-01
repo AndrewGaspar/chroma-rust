@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{mem, path::PathBuf, ptr};
 
 use libloading::Symbol;
 
@@ -13,7 +13,7 @@ pub struct ChromaLibrary {
 }
 
 impl ChromaLibrary {
-    pub fn load() -> Result<Self, libloading::Error> {
+    pub fn load() -> Result<Self, ChromaError> {
         let sdk_path = PathBuf::from(std::env::var_os("ProgramFiles").unwrap())
             .join("Razer Chroma SDK/bin/RzChromaSDK64.dll");
 
@@ -23,7 +23,7 @@ impl ChromaLibrary {
         let uninit_fn = unsafe { sdk.get(b"UnInit\0")? };
 
         unsafe {
-            init_fn();
+            init_fn().r()?;
         }
 
         Ok(Self {
@@ -36,10 +36,8 @@ impl ChromaLibrary {
 impl Drop for ChromaLibrary {
     fn drop(&mut self) {
         unsafe {
-            (*self.uninit_fn)();
-            Box::from_raw(
-                std::mem::replace(&mut self.sdk, std::ptr::null()) as *mut libloading::Library
-            );
+            mem::forget((*self.uninit_fn)());
+            Box::from_raw(mem::replace(&mut self.sdk, ptr::null()) as *mut libloading::Library);
         }
     }
 }

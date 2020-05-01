@@ -1,6 +1,7 @@
 use winapi::shared::ntdef::LONG;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[must_use = "Don't forget to check RZRESULTs"]
 #[repr(transparent)]
 pub struct RZRESULT(pub LONG);
 

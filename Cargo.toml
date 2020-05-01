@@ -8,4 +8,5 @@ edition = "2018"
 
 [dependencies]
 libloading = "0.6"
+quick-error = "1.2"
 winapi = "0.3"

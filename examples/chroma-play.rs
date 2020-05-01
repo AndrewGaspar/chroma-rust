@@ -1,7 +1,7 @@
 use chroma::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let lib = ChromaLibrary::load();
+    let _lib = ChromaLibrary::load()?;
 
     Ok(())
 }

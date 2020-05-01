@@ -1,27 +1,33 @@
+use quick_error::quick_error;
 use winapi::shared::ntdef::LONG;
 
 use crate::sys::{self, RZRESULT};
 
-#[derive(Debug)]
-pub enum ChromaError {
-    RzInvalid,
-    RzAccessDenied,
-    RzInvalidHandle,
-    RzNotSupported,
-    RzInvalidParameter,
-    RzServiceNotActive,
-    RzSingleInstanceApp,
-    RzDeviceNotConnected,
-    RzNotFound,
-    RzRequestAborted,
-    RzAlreadyInitialized,
-    RzResourceDisabled,
-    RzDeviceNotAvailable,
-    RzNotValidState,
-    RzNoMoreItems,
-    RzFailed,
-    WinError(LONG),
-    LibloadingError(libloading::Error),
+quick_error! {
+    #[derive(Debug)]
+    pub enum ChromaError {
+        RzInvalid {}
+        RzAccessDenied {}
+        RzInvalidHandle {}
+        RzNotSupported {}
+        RzInvalidParameter {}
+        RzServiceNotActive {}
+        RzSingleInstanceApp {}
+        RzDeviceNotConnected {}
+        RzNotFound {}
+        RzRequestAborted {}
+        RzAlreadyInitialized {}
+        RzResourceDisabled {}
+        RzDeviceNotAvailable {}
+        RzNotValidState {}
+        RzNoMoreItems {}
+        RzFailed {}
+        WinError(hr: LONG) {}
+        LoadError(err: libloading::Error) {
+            from()
+            description(err.description())
+        }
+    }
 }
 
 impl From<RZRESULT> for ChromaError {
