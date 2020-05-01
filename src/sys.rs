@@ -1,4 +1,107 @@
-use winapi::shared::ntdef::LONG;
+#![allow(dead_code)]
+
+use std::os::raw::c_void;
+
+use winapi::shared::{
+    guiddef::{IsEqualGUID, GUID},
+    ntdef::LONG,
+    windef::HWND,
+};
+
+mod effect;
+
+use effect::*;
+
+pub type InitFn = unsafe extern "C" fn() -> RZRESULT;
+pub type UnInitFn = unsafe extern "C" fn() -> RZRESULT;
+
+pub type CreateEffectFn = unsafe extern "C" fn(
+    device_id: RZDEVICEID,
+    effect: EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateKeyboardEffectFn = unsafe extern "C" fn(
+    effect: KEYBOARD_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateMouseEffectFn = unsafe extern "C" fn(
+    effect: MOUSE_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateHeadsetEffectFn = unsafe extern "C" fn(
+    effect: HEADSET_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateMousepadEffectFn = unsafe extern "C" fn(
+    effect: MOUSEPAD_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateKeypadEffectFn = unsafe extern "C" fn(
+    effect: KEYPAD_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type CreateChromaLinkEffectFn = unsafe extern "C" fn(
+    effect: CHROMA_LINK_EFFECT_TYPE,
+    param: PRZPARAM,
+    effect_id: *mut RZEFFECTID,
+) -> RZRESULT;
+
+pub type DeleteEffectFn = unsafe extern "C" fn(id: RZEFFECTID) -> RZRESULT;
+pub type SetEffectFn = unsafe extern "C" fn(id: RZEFFECTID) -> RZRESULT;
+pub type RegisterEventNotificationFn = unsafe extern "C" fn(hwnd: HWND) -> RZRESULT;
+pub type UnregisterEventNotificationFn = unsafe extern "C" fn() -> RZRESULT;
+pub type QueryDeviceFn =
+    unsafe extern "C" fn(id: RZDEVICEID, device_info: Option<&mut DEVICE_TYPE>) -> RZRESULT;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(transparent)]
+pub struct RZDEVICEID(pub GUID);
+
+impl PartialEq for RZDEVICEID {
+    fn eq(&self, other: &Self) -> bool {
+        IsEqualGUID(&self.0, &other.0)
+    }
+}
+impl Eq for RZDEVICEID {}
+
+pub type PRZPARAM = *mut c_void;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(transparent)]
+pub struct RZEFFECTID(pub GUID);
+
+impl PartialEq for RZEFFECTID {
+    fn eq(&self, other: &Self) -> bool {
+        IsEqualGUID(&self.0, &other.0)
+    }
+}
+impl Eq for RZEFFECTID {}
+
+#[allow(non_camel_case_types)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[repr(C)]
+pub enum DEVICE_TYPE {
+    DEVICE_KEYBOARD = 1,
+    DEVICE_MOUSE = 2,
+    DEVICE_HEADSET = 3,
+    DEVICE_MOUSEPAD = 4,
+    DEVICE_KEYPAD = 5,
+    DEVICE_SYSTEM = 6,
+    DEVICE_SPEAKERS = 7,
+    DEVICE_INVALID,
+}
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[must_use = "Don't forget to check RZRESULTs"]
@@ -32,6 +135,3 @@ pub const RZRESULT_DEVICE_NOT_AVAILABLE: RZRESULT = RZRESULT(4319);
 pub const RZRESULT_NOT_VALID_STATE: RZRESULT = RZRESULT(5023);
 pub const RZRESULT_NO_MORE_ITEMS: RZRESULT = RZRESULT(259);
 pub const RZRESULT_FAILED: RZRESULT = RZRESULT(2147500037i64 as i32);
-
-pub type InitFn = unsafe extern "C" fn() -> RZRESULT;
-pub type UnInitFn = unsafe extern "C" fn() -> RZRESULT;
