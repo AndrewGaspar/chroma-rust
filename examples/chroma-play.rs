@@ -1,30 +1,28 @@
-use chroma::{ChromaLibrary, KeyboardEffect};
+use chroma::{Effect, KeyboardEffect};
 use rgb::RGB;
 use std::{thread::sleep, time::Duration};
 
-const RED: RGB<u8> = RGB {
-    r: 0xff,
-    g: 0x00,
-    b: 0x00,
-};
-const GREEN: RGB<u8> = RGB {
-    r: 0x00,
-    g: 0xff,
-    b: 0x00,
-};
-const BLUE: RGB<u8> = RGB {
-    r: 0x00,
-    g: 0x00,
-    b: 0xff,
-};
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let lib = ChromaLibrary::load()?;
+    let red = Effect::keyboard(KeyboardEffect::Static(RGB {
+        r: 0xff,
+        g: 0x00,
+        b: 0x00,
+    }))?;
 
-    for c in [RED, BLUE, GREEN].iter().cycle() {
-        let effect = lib.create_keyboard_effect(KeyboardEffect::Static(*c))?;
-        lib.set_effect(&effect)?;
-        lib.delete_effect(effect)?;
+    let green = Effect::keyboard(KeyboardEffect::Static(RGB {
+        r: 0x00,
+        g: 0xff,
+        b: 0x00,
+    }))?;
+
+    let blue = Effect::keyboard(KeyboardEffect::Static(RGB {
+        r: 0x00,
+        g: 0x00,
+        b: 0xff,
+    }))?;
+
+    for effect in [red, green, blue].iter().cycle() {
+        effect.set()?;
 
         sleep(Duration::from_secs(1));
     }
