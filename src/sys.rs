@@ -9,8 +9,10 @@ use winapi::shared::{
 };
 
 mod effect;
+mod keys;
 
-use effect::*;
+pub use effect::*;
+pub use keys::*;
 
 pub type InitFn = unsafe extern "C" fn() -> RZRESULT;
 pub type UnInitFn = unsafe extern "C" fn() -> RZRESULT;

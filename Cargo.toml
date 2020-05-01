@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 libloading = "0.6"
 quick-error = "1.2"
+rgb = "0.8"
 
 [dependencies.winapi]
 version = "0.3"

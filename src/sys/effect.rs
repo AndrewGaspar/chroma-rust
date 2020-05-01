@@ -1,5 +1,7 @@
 #![allow(non_camel_case_types)]
 
+use winapi::shared::{minwindef::DWORD, windef::COLORREF};
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[repr(C)]
 pub enum EFFECT_TYPE {
@@ -148,4 +150,12 @@ pub enum CHROMA_LINK_EFFECT_TYPE {
     CHROMA_STATIC,
     /// Invalid effect
     CHROMA_INVALID,
+}
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct STATIC_EFFECT_TYPE {
+    pub size: usize,
+    pub param: DWORD,
+    pub color: COLORREF,
 }

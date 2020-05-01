@@ -1,11 +1,17 @@
-use std::{mem, path::PathBuf, ptr};
+use std::{
+    mem::{self, MaybeUninit},
+    path::PathBuf,
+    ptr,
+};
 
 use libloading::Symbol;
 
+mod effect;
 mod error;
 mod sys;
 
-pub use error::ChromaError;
+pub use effect::*;
+pub use error::{ChromaError, Result};
 
 #[allow(dead_code)]
 pub struct ChromaLibrary {
@@ -26,7 +32,7 @@ pub struct ChromaLibrary {
 }
 
 impl ChromaLibrary {
-    pub fn load() -> Result<Self, ChromaError> {
+    pub fn load() -> Result<Self> {
         let sdk_path = PathBuf::from(std::env::var_os("ProgramFiles").unwrap())
             .join("Razer Chroma SDK/bin/RzChromaSDK64.dll");
 
@@ -69,6 +75,49 @@ impl ChromaLibrary {
             unregister_event_notification_fn,
             query_device_fn,
         })
+    }
+
+    pub fn set_effect(&self, effect: &Effect) -> Result<()> {
+        unsafe {
+            (*self.set_effect_fn)(effect.0).r()?;
+        }
+
+        Ok(())
+    }
+
+    pub fn create_keyboard_effect(&self, effect: KeyboardEffect) -> Result<Effect> {
+        match effect {
+            KeyboardEffect::Static(rgb) => {
+                let mut color = (rgb.r as u32) << 16 | (rgb.g as u32) << 8 | rgb.b as u32;
+                // let mut effect_type = sys::STATIC_EFFECT_TYPE {
+                //     // size: mem::size_of::<sys::STATIC_EFFECT_TYPE>(),
+                //     size: 1,
+                //     param: 0,
+                //     color,
+                // };
+
+                let mut effect_id = MaybeUninit::uninit();
+                unsafe {
+                    (*self.create_keyboard_effect_fn)(
+                        sys::KEYBOARD_EFFECT_TYPE::CHROMA_STATIC,
+                        // &mut effect_type as *mut _ as *mut _,
+                        &mut color as *mut _ as *mut _,
+                        effect_id.as_mut_ptr(),
+                    )
+                    .r()?;
+
+                    Ok(Effect(effect_id.assume_init()))
+                }
+            }
+        }
+    }
+
+    pub fn delete_effect(&self, effect: Effect) -> Result<()> {
+        unsafe {
+            (*self.delete_effect_fn)(effect.0).r()?;
+        }
+
+        Ok(())
     }
 }
 

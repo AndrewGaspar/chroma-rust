@@ -3,6 +3,8 @@ use winapi::shared::ntdef::LONG;
 
 use crate::sys::{self, RZRESULT};
 
+pub type Result<T> = std::result::Result<T, ChromaError>;
+
 quick_error! {
     #[derive(Debug)]
     pub enum ChromaError {
