@@ -1,6 +1,6 @@
 use std::mem::MaybeUninit;
 
-use rgb::RGB;
+use rgb::RGB8;
 
 use crate::{lib, sys, Result};
 
@@ -10,14 +10,16 @@ impl Effect {
     pub fn keyboard(effect: KeyboardEffect) -> Result<Self> {
         match effect {
             KeyboardEffect::Static(rgb) => {
-                let mut color = (rgb.r as u32) << 16 | (rgb.g as u32) << 8 | rgb.b as u32;
+                let mut effect_type = sys::KEYBOARD_STATIC_EFFECT_TYPE {
+                    color: (rgb.r as u32) << 16 | (rgb.g as u32) << 8 | rgb.b as u32,
+                };
 
                 let mut effect_id = MaybeUninit::uninit();
                 unsafe {
                     (*lib()?.create_keyboard_effect_fn)(
                         sys::KEYBOARD_EFFECT_TYPE::CHROMA_STATIC,
                         // &mut effect_type as *mut _ as *mut _,
-                        &mut color as *mut _ as *mut _,
+                        &mut effect_type as *mut _ as *mut _,
                         effect_id.as_mut_ptr(),
                     )
                     .r()?;
@@ -51,5 +53,5 @@ impl Drop for Effect {
 }
 
 pub enum KeyboardEffect {
-    Static(RGB<u8>),
+    Static(RGB8),
 }

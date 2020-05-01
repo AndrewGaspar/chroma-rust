@@ -1,6 +1,6 @@
 #![allow(non_camel_case_types)]
 
-use winapi::shared::{minwindef::DWORD, windef::COLORREF};
+use winapi::shared::windef::COLORREF;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[repr(C)]
@@ -154,8 +154,6 @@ pub enum CHROMA_LINK_EFFECT_TYPE {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct STATIC_EFFECT_TYPE {
-    pub size: usize,
-    pub param: DWORD,
+pub struct KEYBOARD_STATIC_EFFECT_TYPE {
     pub color: COLORREF,
 }
