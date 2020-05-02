@@ -9,10 +9,10 @@ use winapi::shared::{
 };
 
 mod effect;
-mod keys;
+mod key;
 
 pub use effect::*;
-pub use keys::*;
+pub use key::*;
 
 pub type InitFn = unsafe extern "C" fn() -> RZRESULT;
 pub type UnInitFn = unsafe extern "C" fn() -> RZRESULT;
@@ -66,6 +66,9 @@ pub type RegisterEventNotificationFn = unsafe extern "C" fn(hwnd: HWND) -> RZRES
 pub type UnregisterEventNotificationFn = unsafe extern "C" fn() -> RZRESULT;
 pub type QueryDeviceFn =
     unsafe extern "C" fn(id: RZDEVICEID, device_info: Option<&mut DEVICE_TYPE>) -> RZRESULT;
+
+pub const MAX_ROW: usize = 6;
+pub const MAX_COLUMN: usize = 22;
 
 #[derive(Copy, Clone, Debug)]
 #[repr(transparent)]

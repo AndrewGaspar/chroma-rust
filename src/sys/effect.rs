@@ -1,7 +1,5 @@
 #![allow(non_camel_case_types)]
 
-use winapi::shared::windef::COLORREF;
-
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[repr(C)]
 pub enum EFFECT_TYPE {
@@ -152,8 +150,21 @@ pub enum CHROMA_LINK_EFFECT_TYPE {
     CHROMA_INVALID,
 }
 
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct KEYBOARD_STATIC_EFFECT_TYPE {
-    pub color: COLORREF,
+pub mod keyboard {
+    use winapi::shared::windef::COLORREF;
+
+    use crate::{MAX_COLUMN, MAX_ROW};
+
+    #[derive(Copy, Clone, Default, Debug)]
+    #[repr(C)]
+    pub struct STATIC_EFFECT_TYPE {
+        pub color: COLORREF,
+    }
+
+    #[derive(Copy, Clone, Default, Debug)]
+    #[repr(C)]
+    pub struct CUSTOM_KEY_EFFECT_TYPE {
+        pub color: [[COLORREF; MAX_COLUMN as usize]; MAX_ROW as usize],
+        pub key: [[COLORREF; MAX_COLUMN as usize]; MAX_ROW as usize],
+    }
 }

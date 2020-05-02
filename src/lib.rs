@@ -4,10 +4,15 @@ use libloading::Symbol;
 
 mod effect;
 mod error;
-mod sys;
+mod key;
+pub mod sys;
 
 pub use effect::*;
 pub use error::{ChromaError, Result};
+pub use key::*;
+
+pub const MAX_COLUMN: u8 = sys::MAX_COLUMN as u8;
+pub const MAX_ROW: u8 = sys::MAX_ROW as u8;
 
 lazy_static::lazy_static! {
     static ref CHROMA_LIBRARY: RwLock<Option<ChromaLibrary>> = RwLock::default();
