@@ -22,8 +22,8 @@ pub(crate) unsafe fn lib() -> Result<&'static ChromaLibrary> {
     match CHROMA_LIBRARY.try_read() {
         Ok(guard) => {
             if let Some(lib) = guard.as_ref() {
-                // It's safe to erase the lifetime because once the Library is loaded, we never mutate
-                // it again.
+                // It's safe to erase the lifetime because once the Library is loaded, we never
+                // mutate it again.
                 return Ok(&*(lib as *const _));
             }
         }
