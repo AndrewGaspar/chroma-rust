@@ -1,4 +1,4 @@
-use chroma::{Key, KeyboardCustomKeyEffectBuilder, KeyboardStaticEffectBuilder};
+use chroma_rust::{Key, KeyboardCustomKeyEffectBuilder, KeyboardStaticEffectBuilder};
 use rgb::RGB8;
 use std::{error::Error, thread::sleep, time::Duration};
 
@@ -49,8 +49,8 @@ fn static_cycle() -> Result<(), Box<dyn Error>> {
 
 fn grid() -> Result<(), Box<dyn Error>> {
     loop {
-        for row in 0..chroma::MAX_ROW {
-            for column in 0..chroma::MAX_COLUMN {
+        for row in 0..chroma_rust::MAX_ROW {
+            for column in 0..chroma_rust::MAX_COLUMN {
                 let effect = KeyboardCustomKeyEffectBuilder::new()
                     .set_position(
                         row,
@@ -73,15 +73,15 @@ fn grid() -> Result<(), Box<dyn Error>> {
 
 fn numpad() -> Result<(), Box<dyn Error>> {
     let nums = [
-        Key::Row1,
-        Key::Row2,
-        Key::Row3,
-        Key::Row4,
-        Key::Row5,
-        Key::Row6,
-        Key::Row7,
-        Key::Row8,
-        Key::Row9,
+        Key::Numpad1,
+        Key::Numpad2,
+        Key::Numpad3,
+        Key::Numpad4,
+        Key::Numpad5,
+        Key::Numpad6,
+        Key::Numpad7,
+        Key::Numpad8,
+        Key::Numpad9,
     ];
 
     let effects: Vec<_> = nums
